@@ -108,6 +108,7 @@ resource "aws_instance" "instance" {
     child_public_ip1 = aws_instance.instance-child[0].public_ip
     child_public_ip2 = aws_instance.instance-child[1].public_ip
     child_public_ip3 = aws_instance.instance-child[2].public_ip
+    private_key = file("${path.module}/ansible-key/ansible")
   }))
 
   depends_on = [aws_instance.instance-child[0], aws_instance.instance-child[1], aws_instance.instance-child[2]]
