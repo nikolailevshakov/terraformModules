@@ -12,6 +12,10 @@ provider "aws" {
   profile = "default"
 }
 
-module "ansible" {
-  source = "./modules/ansible"
+#module "ansible" {
+#  source = "./modules/ansible"
+#}
+
+module "alb-ec2" {
+  source = "./modules/alb-ec2"
 }
