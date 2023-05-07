@@ -1,6 +1,6 @@
-#output "control_node_ip_addr" {
-#  description = "Public IP of control node"
-#  value = module.ansible.control_node_ip_addr
+#output "instance" {
+#  description = "Public IP of instance"
+#  value = module.instance.instance
 #}
 #
 #output "child_ip_addresses" {
