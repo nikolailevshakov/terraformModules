@@ -14,13 +14,13 @@ variable "vpc_cidr_block" {
 variable "subnet_cidr_block_1" {
   description = "Cidr block for subnet VPC"
   type = string
-  default = "10.14.15.1/26"
+  default = "10.14.15.0/27"
 }
 
 variable "subnet_cidr_block_2" {
   description = "Cidr block for subnet VPC"
   type = string
-  default = "10.14.15.2/26"
+  default = "10.14.15.64/27"
 }
 
 variable "my_ip" {
