@@ -8,25 +8,37 @@ variable "region" {
 variable "vpc_cidr_block" {
   description = "Cidr block for VPC"
   type = string
-  default = "10.14.15.0/24"
+  default = "10.14.0.0/16"
 }
 
 variable "subnet_cidr_block_1" {
-  description = "Cidr block for subnet VPC"
+  description = "Cidr block for public subnet VPC"
   type = string
-  default = "10.14.15.0/27"
+  default = "10.14.1.0/24"
 }
 
 variable "subnet_cidr_block_2" {
-  description = "Cidr block for subnet VPC"
+  description = "Cidr block for public subnet VPC"
   type = string
-  default = "10.14.15.64/27"
+  default = "10.14.2.0/24"
+}
+
+variable "subnet_cidr_block_3" {
+  description = "Cidr block for private subnet VPC"
+  type = string
+  default = "10.14.3.0/24"
+}
+
+variable "subnet_cidr_block_4" {
+  description = "Cidr block for private subnet VPC"
+  type = string
+  default = "10.14.4.0/24"
 }
 
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "188.246.37.2"
+  default = "87.116.140.68"
 }
 
 variable "ami" {

@@ -18,18 +18,32 @@ resource "aws_vpc" "sample-vpc" {
   enable_dns_hostnames = true
 }
 
-resource "aws_subnet" "subnet-1" {
+resource "aws_subnet" "public-subnet-1" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block_1
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
 }
 
-resource "aws_subnet" "subnet-2" {
+resource "aws_subnet" "public-subnet-2" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block_2
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "private-subnet-1" {
+  vpc_id                  = aws_vpc.sample-vpc.id
+  cidr_block              = var.subnet_cidr_block_3
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = false
+}
+
+resource "aws_subnet" "private-subnet-2" {
+  vpc_id                  = aws_vpc.sample-vpc.id
+  cidr_block              = var.subnet_cidr_block_4
+  availability_zone       = "us-east-1b"
+  map_public_ip_on_launch = false
 }
 
 resource "aws_internet_gateway" "igw" {
@@ -45,14 +59,46 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
+resource "aws_eip" "nat_gateway" {
+  vpc = true
+  associate_with_private_ip = "10.14.0.5"
+  depends_on = [aws_internet_gateway.igw]
+}
+
+resource "aws_nat_gateway" "ngw" {
+  allocation_id = aws_eip.nat_gateway.id
+  subnet_id = aws_subnet.public-subnet-1.id
+
+  depends_on = [aws_eip.nat_gateway]
+}
+
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.sample-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.ngw.id
+  }
+}
+
 resource "aws_route_table_association" "route_table_ass_subnet-1" {
-  subnet_id = aws_subnet.subnet-1.id
+  subnet_id = aws_subnet.public-subnet-1.id
   route_table_id = aws_route_table.public_rt.id
 }
 
 resource "aws_route_table_association" "route_table_ass_subnet-2" {
-  subnet_id = aws_subnet.subnet-2.id
+  subnet_id = aws_subnet.public-subnet-2.id
   route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_route_table_association" "route_table_ass_subnet-3" {
+  subnet_id = aws_subnet.private-subnet-1.id
+  route_table_id = aws_route_table.private_rt.id
+}
+
+resource "aws_route_table_association" "route_table_ass_subnet-4" {
+  subnet_id = aws_subnet.private-subnet-2.id
+  route_table_id = aws_route_table.private_rt.id
 }
 
 resource "aws_security_group" "instance" {
@@ -66,6 +112,7 @@ resource "aws_security_group" "instance" {
     protocol    = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
+
   ingress {
     from_port   = 443
     to_port     = 443
@@ -106,10 +153,67 @@ resource "aws_security_group" "alb" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+#    security_groups = [aws_security_group.instance.id]
   }
 
   tags = {
     Name = "Egress-instances, ingress-all"
+  }
+}
+
+data "aws_caller_identity" "current" {}
+data "aws_elb_service_account" "elb_account_id" {}
+
+resource "aws_s3_bucket" "lb_logs" {
+  bucket = "loadbalancer-logs-04071993"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_policy" "lb_logs" {
+  bucket = aws_s3_bucket.lb_logs.id
+  policy = data.aws_iam_policy_document.allow_lb.json
+}
+
+data "aws_iam_policy_document" "allow_lb" {
+  statement {
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.lb_logs.bucket}/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
+    ]
+    actions = ["s3:PutObject"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_elb_service_account.elb_account_id.id}:root"]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.lb_logs.bucket}/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
+    ]
+    actions = ["s3:PutObject"]
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values   = ["bucket-owner-full-control"]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.lb_logs.bucket}",
+    ]
+    actions = ["s3:GetBucketAcl"]
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
   }
 }
 
@@ -118,15 +222,14 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = [aws_subnet.subnet-1.id, aws_subnet.subnet-2.id]
+  subnets            = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
 
   enable_deletion_protection = false
 
-#  access_logs {
-#    bucket  = aws_s3_bucket.lb_logs.id
-#    prefix  = "test-lb"
-#    enabled = true
-#  }
+  access_logs {
+    bucket  = aws_s3_bucket.lb_logs.id
+    enabled = true
+  }
 
   tags = {
     Name = "alb"
@@ -141,9 +244,9 @@ resource "aws_lb_target_group" "tg-1" {
 }
 
 resource "aws_lb_target_group_attachment" "tg_attachment-1" {
-  for_each = toset(aws_instance.instance-1[*].id)
+  count            = length(aws_instance.instance-1)
   target_group_arn = aws_lb_target_group.tg-1.arn
-  target_id        = each.value
+  target_id        = aws_instance.instance-1[count.index].id
   port             = 80
 }
 
@@ -155,9 +258,9 @@ resource "aws_lb_target_group" "tg-2" {
 }
 
 resource "aws_lb_target_group_attachment" "tg_attachment-2" {
-  for_each = toset(aws_instance.instance-2[*].id)
+  count            = length(aws_instance.instance-2)
   target_group_arn = aws_lb_target_group.tg-2.arn
-  target_id        = each.value
+  target_id        = aws_instance.instance-2[count.index].id
   port             = 80
 }
 
@@ -182,12 +285,10 @@ resource "aws_lb_listener" "front_end" {
 resource "aws_instance" "instance-1" {
   ami                         = var.ami[var.region]
   instance_type               = "t2.micro"
-#  key_name                    = aws_key_pair.key_pair.key_name
-  associate_public_ip_address = true
-  subnet_id                   = aws_subnet.subnet-1.id
+  subnet_id                   = aws_subnet.private-subnet-1.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
   user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {}))
-  count = 1
+  count = 2
 
   tags = {
     Name = "Group-1-node-${count.index}"
@@ -197,12 +298,10 @@ resource "aws_instance" "instance-1" {
 resource "aws_instance" "instance-2" {
   ami                         = var.ami[var.region]
   instance_type               = "t2.micro"
-#  key_name                    = aws_key_pair.key_pair.key_name
-  associate_public_ip_address = true
-  subnet_id                   = aws_subnet.subnet-2.id
+  subnet_id                   = aws_subnet.private-subnet-2.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
   user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {}))
-  count = 1
+  count = 2
 
   tags = {
     Name = "Group-2-node-${count.index}"
