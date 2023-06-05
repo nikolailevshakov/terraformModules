@@ -16,10 +16,14 @@ provider "aws" {
 #  source = "./modules/ansible"
 #}
 
-module "instance" {
-  source = "./modules/instance"
-}
+#module "instance" {
+#  source = "./modules/instance"
+#}
 
 #module "alb-ec2" {
 #  source = "./modules/alb-ec2"
 #}
+
+module "sitespeed-io" {
+  source = "./modules/sitespeed-io"
+}
