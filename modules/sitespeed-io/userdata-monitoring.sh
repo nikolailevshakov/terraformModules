@@ -21,37 +21,26 @@ apt-get update -y
 
 apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
-# RUN INFLUXB
+# RUN INFLUXDB
 
-docker run -d --name influxdb -p 8086:8086 --volume $PWD/influxdb:/var/lib/influxdb2 influxdb:2.7.0
+docker network create -d bridge monitoring
+
+docker run -d --name influxdb -p 8086:8086 --net=monitoring --volume $PWD/influxdb:/var/lib/influxdb2 influxdb:2.7.0
 sleep 5
 docker exec influxdb bash -c "influx setup --username admin --password adminadmin --org local -bucket default -f"
-docker exec influxdb bash -c "influx auth list -u admin --hide-headers --json | grep token | cut -c 13-100 > influx_token.txt"
+docker exec influxdb bash -c "influx auth list -u admin --hide-headers --json | grep token | cut -c 13-100 > influxdb_token.txt"
 
-docker cp influxdb:/influx_token.txt /home/ubuntu/influxdb_token.txt
-export INFLUXDB_TOKEN=$$(cat influxdb)
+docker cp influxdb:/influxdb_token.txt /home/ubuntu/
+
+export INFLUXDB_TOKEN="$(cat /home/ubuntu/influxdb_token.txt)"
+
 
 # RUN GRAFANA
 
-docker run -d --name grafana -p 3000:3000 grafana/grafana-oss
+echo "${grafana_config}" > /home/ubuntu/default.yaml
+envsubst < default.yaml
+
+docker run -d --name grafana -p 3000:3000 -v /home/ubuntu/default.yaml:/etc/grafana/provisioning/datasources/default.yaml --net=monitoring grafana/grafana-oss
 
 
-#systemctl start grafana-server
-#
-#
-#cat << EOF > /etc/grafana/grafana.ini
-#apiVersion: 1
-#
-#datasources:
-#  - name: InfluxDB_v2_Flux
-#    type: influxdb
-#    access: proxy
-#    url: http://localhost:8086
-#    jsonData:
-#      version: Flux
-#      organization: local
-#      defaultBucket: default
-#      tlsSkipVerify: true
-#    secureJsonData:
-#      token: $INFLUX_TOKEN
-#EOF
+

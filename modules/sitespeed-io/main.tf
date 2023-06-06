@@ -135,7 +135,9 @@ resource "aws_instance" "instance-monitoring" {
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.instance-monitoring-sg.id]
 
-  user_data_base64 = base64encode(templatefile("${path.module}/userdata-monitoring.sh", {}))
+  user_data_base64 = base64encode(templatefile("${path.module}/userdata-monitoring.sh", {
+    grafana_config = file("${path.module}/default.yaml")
+  }))
 
   tags = {
     Name = "Instance-monitoring"
