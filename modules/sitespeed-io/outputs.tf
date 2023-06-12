@@ -1,9 +1,9 @@
-output "sitespeed-io-1" {
+output "monitoring-instance" {
   description = "Ip of the instance with influxdb and grafana"
   value = aws_instance.instance-monitoring.public_ip
 }
 
-#output "sitespeed-io-2" {
+#output "sitespeed-io-agent" {
 #  description = "Ip of the instance with sitespeed-io"
 #  value = aws_instance.instance-sitespeed.public_ip
 #}

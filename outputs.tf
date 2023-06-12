@@ -13,12 +13,12 @@
 #  value = module.alb-ec2.alb_dns_name
 #}
 
-output "sitespeed-io-1" {
+output "monitoring-instance" {
   description = "Ip of the instance with influxdb and grafana"
-  value = module.sitespeed-io.sitespeed-io-1
+  value = module.sitespeed-io.monitoring-instance
 }
 
-#output "sitespeed-io-2" {
+#output "sitespeed-io-agent" {
 #  description = "Ip of the instance with sitespeed-io"
-#  value = module.sitespeed-io.instance-sitespeed
+#  value = module.sitespeed-io.sitespeed-io-agent
 #}

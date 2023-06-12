@@ -135,8 +135,10 @@ resource "aws_instance" "instance-monitoring" {
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.instance-monitoring-sg.id]
 
-  user_data_base64 = base64encode(templatefile("${path.module}/userdata-monitoring.sh", {
-    grafana_config = file("${path.module}/default.yaml")
+  user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/userdata-monitoring.sh", {
+    grafana_config = file("${path.module}/config/influxdb_datasource.yaml"),
+    grafana_dashboard_config = file("${path.module}/config/influxdb_dashboard.yaml"),
+    telegraf_config = file("${path.module}/config/telegraf.conf"),
   }))
 
   tags = {
@@ -152,8 +154,9 @@ resource "aws_instance" "instance-monitoring" {
 #  subnet_id                   = aws_subnet.public.id
 #  vpc_security_group_ids      = [aws_security_group.instance-sitespeed-sg.id]
 #
-#  user_data_base64 = base64encode(templatefile("${path.module}/userdata-sitespeed.sh", {
-#    MONITORING_INSTANCE_IP = aws_instance.instance-monitoring.public_ip
+#  user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/userdata-sitespeed.sh", {
+#    MONITORING_INSTANCE_IP = aws_instance.instance-monitoring.public_ip,
+#    telegraf_config = file("${path.module}/config/telegraf.conf"),
 #  }))
 #  depends_on = [aws_instance.instance-monitoring]
 #  tags = {
