@@ -24,6 +24,10 @@ provider "aws" {
 #  source = "./modules/alb-ec2"
 #}
 
-module "sitespeed-io" {
-  source = "./modules/sitespeed-io"
+#module "sitespeed-io" {
+#  source = "./modules/sitespeed-io"
+#}
+
+module "sitespeed-io-1vm" {
+  source = "./modules/sitespeed-io-1vm"
 }
