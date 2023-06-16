@@ -20,7 +20,7 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.164.25"
+  default = "87.116.164.103"
 }
 
 variable "ami" {

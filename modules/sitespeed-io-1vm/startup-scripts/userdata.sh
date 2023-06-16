@@ -30,7 +30,7 @@ docker compose -f /home/ubuntu/docker-compose.yaml up -d
 
 # RUN SITESPEED.IO
 
-#sleep 10
+#sleep 120
 #
 docker run --rm -d -v "$(pwd):/sitespeed.io" sitespeedio/sitespeed.io:27.9.0 \
   --graphite.host=host.docker.internal https://www.sephora.com/ \

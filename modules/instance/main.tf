@@ -21,7 +21,7 @@ resource "aws_vpc" "sample-vpc" {
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block
-  availability_zone       = "us-east-1a"
+  availability_zone       = "${var.region}a"
   map_public_ip_on_launch = true
 }
 
@@ -90,13 +90,17 @@ resource "aws_key_pair" "key_pair" {
 
 resource "aws_instance" "myinstance" {
   ami                         = var.ami[var.region]
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   key_name                    = aws_key_pair.key_pair.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
 
-  user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {}))
+  root_block_device {
+    volume_size = 20
+  }
+
+  user_data_base64 = base64encode(templatefile("${path.module}/wptagent.sh", {}))
 
   tags = {
     Name = "Instance"

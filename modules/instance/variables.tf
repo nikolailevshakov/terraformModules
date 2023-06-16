@@ -1,7 +1,7 @@
 variable "region" {
   description = "Chosen region"
   type = string
-  default = "us-east-1"
+  default = "us-west-1"
 }
 
 
@@ -20,14 +20,15 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.160.230"
+  default = "87.116.161.216"
 }
 
 variable "ami" {
   description = "AMI based on a region"
   type = map
   default = {
-    "us-east-1" = "ami-0557a15b87f6559cf"
+    "us-east-1" = "ami-053b0d53c279acc90"
     "eu-central-1" = "ami-0fa03365cde71e0ab"
+    "us-west-1" = "ami-0f8e81a3da6e2510a"
   }
 }

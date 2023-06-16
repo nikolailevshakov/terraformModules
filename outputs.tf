@@ -1,7 +1,7 @@
-#output "instance" {
-#  description = "Public IP of instance"
-#  value = module.instance.instance
-#}
+output "instance" {
+  description = "Public IP of instance"
+  value = module.instance.instance
+}
 
 #output "child_ip_addresses" {
 #  description = "Public IPs of child nodes"
@@ -23,7 +23,7 @@
 #  value = module.sitespeed-io.sitespeed-io-agent
 #}
 
-output "sitespeed-io-instance" {
-  description = "Ip of the instance with influxdb and grafana"
-  value = module.sitespeed-io-1vm.instance
-}
+#output "sitespeed-io-instance" {
+#  description = "Ip of the instance with influxdb and grafana"
+#  value = module.sitespeed-io-1vm.instance
+#}
