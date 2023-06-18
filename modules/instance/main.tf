@@ -90,17 +90,17 @@ resource "aws_key_pair" "key_pair" {
 
 resource "aws_instance" "myinstance" {
   ami                         = var.ami[var.region]
-  instance_type               = "t3.micro"
+  instance_type               = var.instance_type
   key_name                    = aws_key_pair.key_pair.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
 
   root_block_device {
-    volume_size = 20
+    volume_size = var.volume_size
   }
 
-  user_data_base64 = base64encode(templatefile("${path.module}/wptagent.sh", {}))
+  user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {}))
 
   tags = {
     Name = "Instance"

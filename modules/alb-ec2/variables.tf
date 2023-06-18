@@ -38,7 +38,7 @@ variable "subnet_cidr_block_4" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.140.68"
+  default = "87.116.163.37"
 }
 
 variable "ami" {
@@ -48,4 +48,16 @@ variable "ami" {
     "us-east-1" = "ami-0557a15b87f6559cf"
     "eu-central-1" = "ami-0fa03365cde71e0ab"
   }
+}
+
+variable "instance_type" {
+  description = "Instance type"
+  type = string
+  default = "t2.micro"
+}
+
+variable "instance_amount" {
+  description = "Amount of instances in target group"
+  type = number
+  default = 2
 }

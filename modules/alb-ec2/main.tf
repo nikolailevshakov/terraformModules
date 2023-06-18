@@ -21,28 +21,28 @@ resource "aws_vpc" "sample-vpc" {
 resource "aws_subnet" "public-subnet-1" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block_1
-  availability_zone       = "us-east-1a"
+  availability_zone       = "${var.region}a"
   map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "public-subnet-2" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block_2
-  availability_zone       = "us-east-1b"
+  availability_zone       = "${var.region}b"
   map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "private-subnet-1" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block_3
-  availability_zone       = "us-east-1a"
+  availability_zone       = "${var.region}a"
   map_public_ip_on_launch = false
 }
 
 resource "aws_subnet" "private-subnet-2" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block_4
-  availability_zone       = "us-east-1b"
+  availability_zone       = "${var.region}b"
   map_public_ip_on_launch = false
 }
 
@@ -112,13 +112,19 @@ resource "aws_security_group" "instance" {
     protocol    = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
-
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    security_groups = ["${var.my_ip}/32"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -283,12 +289,12 @@ resource "aws_lb_listener" "front_end" {
 }
 
 resource "aws_instance" "instance-1" {
+  count                       = var.instance_amount
   ami                         = var.ami[var.region]
-  instance_type               = "t2.micro"
+  instance_type               = var.instance_type
   subnet_id                   = aws_subnet.private-subnet-1.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
   user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {}))
-  count = 2
 
   tags = {
     Name = "Group-1-node-${count.index}"
@@ -296,12 +302,12 @@ resource "aws_instance" "instance-1" {
 }
 
 resource "aws_instance" "instance-2" {
+  count                       = var.instance_amount
   ami                         = var.ami[var.region]
-  instance_type               = "t2.micro"
+  instance_type               = var.instance_type
   subnet_id                   = aws_subnet.private-subnet-2.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
   user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {}))
-  count = 2
 
   tags = {
     Name = "Group-2-node-${count.index}"

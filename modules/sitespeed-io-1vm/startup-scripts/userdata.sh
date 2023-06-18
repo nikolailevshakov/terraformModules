@@ -28,10 +28,9 @@ echo "${docker_compose}" > /home/ubuntu/docker-compose.yaml
 
 docker compose -f /home/ubuntu/docker-compose.yaml up -d
 
-# RUN SITESPEED.IO
+# RUN SITESPEED.IO with VM 4 CPU, 8 RAM
 
-#sleep 120
-#
-docker run --rm -d -v "$(pwd):/sitespeed.io" sitespeedio/sitespeed.io:27.9.0 \
-  --graphite.host=host.docker.internal https://www.sephora.com/ \
-  --slug sephoraTest --graphite.addSlugToKey true -n 1
+
+#docker run --rm -d -v "$(pwd):/sitespeed.io" sitespeedio/sitespeed.io:27.9.0 \
+#  --graphite.host=host.docker.internal https://www.sephora.com/ \
+#  --slug sephoraTest --graphite.addSlugToKey true -n 1

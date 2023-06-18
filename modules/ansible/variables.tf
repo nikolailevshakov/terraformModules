@@ -20,7 +20,7 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "188.246.37.2"
+  default = "87.116.163.37"
 }
 
 variable "ami" {
@@ -30,4 +30,22 @@ variable "ami" {
     "us-east-1" = "ami-0557a15b87f6559cf"
     "eu-central-1" = "ami-0fa03365cde71e0ab"
   }
+}
+
+variable "controle_node_instance_type" {
+  description = "Instance type of the control node"
+  type = string
+  default = "t2.micro"
+}
+
+variable "children_node_instance_type" {
+  description = "Instance type of the control node"
+  type = string
+  default = "t2.micro"
+}
+
+variable "children_node_amount" {
+  description = "Amount of children instances"
+  type = number
+  default = 3
 }

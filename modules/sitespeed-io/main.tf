@@ -21,7 +21,7 @@ resource "aws_vpc" "sample-vpc" {
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.sample-vpc.id
   cidr_block              = var.subnet_cidr_block
-  availability_zone       = "us-east-1a"
+  availability_zone       = "${var.region}a"
   map_public_ip_on_launch = true
 }
 
@@ -129,15 +129,15 @@ resource "aws_key_pair" "key_pair" {
 
 resource "aws_instance" "instance-monitoring" {
   ami                         = var.ami[var.region]
-  instance_type               = "t2.micro"
+  instance_type               = var.type_monitoring_instance
   key_name                    = aws_key_pair.key_pair.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.instance-monitoring-sg.id]
 
   user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/userdata-monitoring.sh", {
-    grafana_config = file("${path.module}/config/influxdb_datasource.yaml"),
-    grafana_dashboard_config = file("${path.module}/config/influxdb_dashboard.yaml"),
+    influxdb_datasource = file("${path.module}/config/influxdb_datasource.yaml"),
+    influxdb_dashboard_config = file("${path.module}/config/influxdb_dashboard.yaml"),
     telegraf_config = file("${path.module}/config/telegraf.conf"),
   }))
 
@@ -148,7 +148,7 @@ resource "aws_instance" "instance-monitoring" {
 
 #resource "aws_instance" "instance-sitespeed" {
 #  ami                         = var.ami[var.region]
-#  instance_type               = "t2.micro"
+#  instance_type               = var.type_sitespeedio_instance
 #  key_name                    = aws_key_pair.key_pair.key_name
 #  associate_public_ip_address = true
 #  subnet_id                   = aws_subnet.public.id

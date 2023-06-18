@@ -20,7 +20,7 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.161.216"
+  default = "87.116.163.37"
 }
 
 variable "ami" {
@@ -31,4 +31,16 @@ variable "ami" {
     "eu-central-1" = "ami-0fa03365cde71e0ab"
     "us-west-1" = "ami-0f8e81a3da6e2510a"
   }
+}
+
+variable "instance_type" {
+  description = "Instance type"
+  type = string
+  default = "t2.micro"
+}
+
+variable "volume_size" {
+  description = "ebs root volume size in GB"
+  type = number
+  default = 10
 }

@@ -61,18 +61,16 @@ docker run -d --name=telegraf \
 
 # RUN GRAFANA
 
-echo "${grafana_config}" > /home/ubuntu/default.yaml
-echo "${grafana_dashboard_config}" > /home/ubuntu/default_d.yaml
-# Downloads as a directory
-wget https://grafana.com/api/dashboards/15650/revisions/1/download/telegraf-influxdb-2-0-flux_rev1.json
+echo "${influxdb_datasource}" > /home/ubuntu/influxdb_datasource.yaml
+echo "${influxdb_dashboard_config}" > /home/ubuntu/influxdb_dashboard_config.yaml
 
-
-envsubst < default.yaml
+wget -O https://grafana.com/api/dashboards/15650/revisions/1/download/telegraf-influxdb-2-0-flux_rev1.json
 
 docker run -d --name grafana -p 3000:3000 \
-  -v /home/ubuntu/default.yaml:/etc/grafana/provisioning/datasources/default.yaml \
-  -v /home/ubuntu/default_d.yaml:/etc/grafana/provisioning/dashboards/default.yaml \
-  -v /home/ubuntu/download:/var/lib/grafana/dashboards/tig.json \
+  -v /home/ubuntu/influxdb_datasource.yaml:/etc/grafana/provisioning/datasources/default.yaml \
+  -v /home/ubuntu/influxdb_dashboard_config.yaml:/etc/grafana/provisioning/dashboards/default.yaml \
+  -v /home/ubuntu/telegraf-influxdb-2-0-flux_rev1.json:/var/lib/grafana/dashboards/tig.json \
+  -e GF_AUTH_ANONYMOUS_ENABLED=true -e GF_SECURITY_ADMIN_PASSWORD=password -e GF_SECURITY_ADMIN_USER=admin \
   --net=monitoring grafana/grafana-oss
 
 

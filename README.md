@@ -1,7 +1,16 @@
 # terraformModules
-Collection of terraform modules
+Collection of terraform modules:
+- alb-ec2: application load balancer with 2 target groups.
+- ansible: controle node and 3 child nodes, with configured ansible and ssh.
+- instance: one vm with public IP.
+- sitespeed-io: one vm with grafana, influxdb and telegraf, second with sitespeedio and telegraf agent.
+- sitespeed-io-1vm: the same as the sitespeed-io only all in one machine.
 
-Ansible-key directory contains keys to control child nodes by ansible control node.
-To check that module works correctly:
-- ssh to control node with key.pub
-- run command ansible -i ./hosts servers -m ping
+TODO:
+- prometheus:
+- kubernetes:
+- postgresql:
+- jenkins:
+- kafka:
+
+

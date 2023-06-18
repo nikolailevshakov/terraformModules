@@ -31,3 +31,8 @@ variable "ami" {
     "eu-central-1" = "ami-0fa03365cde71e0ab"
   }
 }
+variable "instance_type" {
+  description = "Instance type"
+  type = string
+  default = "t2.micro"
+}

@@ -20,7 +20,7 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.160.230"
+  default = "87.116.163.37"
 }
 
 variable "ami" {
@@ -30,4 +30,16 @@ variable "ami" {
     "us-east-1" = "ami-0557a15b87f6559cf"
     "eu-central-1" = "ami-0fa03365cde71e0ab"
   }
+}
+
+variable "type_monitoring_instance" {
+  description = "Instance type of monitoring VM"
+  type = string
+  default = "t2.micro"
+}
+
+variable "type_sitespeedio_instance" {
+  description = "Instance type of sitespeedio agent, recommended 4 CPU and 8 RAM"
+  type = string
+  default = "t2.micro"
 }
