@@ -24,10 +24,14 @@ provider "aws" {
 #  source = "./modules/instance"
 #}
 
-module "sitespeed-io" {
-  source = "./modules/sitespeed-io"
-}
+#module "sitespeed-io" {
+#  source = "./modules/sitespeed-io"
+#}
 
 #module "sitespeed-io-1vm" {
 #  source = "./modules/sitespeed-io-1vm"
 #}
+
+module "prometheus" {
+  source = "./modules/prometheus"
+}

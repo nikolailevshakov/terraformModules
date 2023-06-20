@@ -13,12 +13,17 @@
 #  value = module.instance.instance
 #}
 
-output "monitoring-instance" {
-  description = "Ip of the instance with influxdb and grafana"
-  value = module.sitespeed-io.monitoring-instance
-}
+#output "monitoring-instance" {
+#  description = "Ip of the instance with influxdb and grafana"
+#  value = module.sitespeed-io.monitoring-instance
+#}
 
 #output "sitespeed-io-instance" {
 #  description = "Ip of the instance with influxdb and grafana"
 #  value = module.sitespeed-io-1vm.instance
 #}
+
+output "instance" {
+  description = "Public IP of instance"
+  value = module.prometheus.instance
+}

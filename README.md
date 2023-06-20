@@ -5,12 +5,13 @@ Collection of terraform modules:
 - instance: one vm with public IP.
 - sitespeed-io: one vm with grafana, influxdb and telegraf, second with sitespeedio and telegraf agent.
 - sitespeed-io-1vm: the same as the sitespeed-io only all in one machine.
+- prometheus: one vm with prometheus running in docker
 
 TODO:
-- prometheus:
 - kubernetes:
 - postgresql:
 - jenkins:
 - kafka:
+- ELK:
 
 
