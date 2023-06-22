@@ -32,6 +32,10 @@ provider "aws" {
 #  source = "./modules/sitespeed-io-1vm"
 #}
 
-module "prometheus" {
-  source = "./modules/prometheus"
+#module "prometheus" {
+#  source = "./modules/prometheus"
+#}
+
+module "jenkins" {
+  source = "./modules/jenkins"
 }

@@ -23,7 +23,12 @@
 #  value = module.sitespeed-io-1vm.instance
 #}
 
+#output "instance" {
+#  description = "Public IP of instance"
+#  value = module.prometheus.instance
+#}
+
 output "instance" {
   description = "Public IP of instance"
-  value = module.prometheus.instance
+  value = module.jenkins.instance
 }
