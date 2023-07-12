@@ -36,6 +36,10 @@ provider "aws" {
 #  source = "./modules/prometheus"
 #}
 
-module "jenkins" {
-  source = "./modules/jenkins"
+#module "jenkins" {
+#  source = "./modules/jenkins"
+#}
+
+module "kubernetes" {
+  source = "./modules/kubernetes"
 }

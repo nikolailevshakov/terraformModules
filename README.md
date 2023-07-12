@@ -7,6 +7,7 @@ Collection of terraform modules:
 - sitespeed-io-1vm: the same as the sitespeed-io only all in one machine.
 - prometheus: one vm with prometheus running in docker
 - jenkins: one vm with installed jenkins in docker
+- kubernetes: microk8s cluster
 
 TODO:
 - kubernetes:

@@ -28,7 +28,12 @@
 #  value = module.prometheus.instance
 #}
 
-output "instance" {
+#output "instance" {
+#  description = "Public IP of instance"
+#  value = module.jenkins.instance
+#}
+
+output "control-plane" {
   description = "Public IP of instance"
-  value = module.jenkins.instance
+  value = module.kubernetes.control_node_ip_addr
 }
