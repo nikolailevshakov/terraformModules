@@ -49,28 +49,70 @@ resource "aws_security_group" "instance" {
   description = "Allows ssh access"
   vpc_id      = aws_vpc.sample_vpc.id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
-  }
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
-  }
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
-  }
+#  ingress {
+#    from_port   = 22
+#    to_port     = 22
+#    protocol    = "tcp"
+#    cidr_blocks = ["${var.my_ip}/32", var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 6443
+#    to_port     = 6443
+#    protocol    = "tcp"
+#    cidr_blocks = [var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 2379
+#    to_port     = 2379
+#    protocol    = "tcp"
+#    cidr_blocks = [var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 2380
+#    to_port     = 2380
+#    protocol    = "tcp"
+#    cidr_blocks = [var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 10250
+#    to_port     = 10250
+#    protocol    = "tcp"
+#    cidr_blocks = [var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 10251
+#    to_port     = 10251
+#    protocol    = "tcp"
+#    cidr_blocks = [var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 10252
+#    to_port     = 10252
+#    protocol    = "tcp"
+#    cidr_blocks = [var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 8472
+#    to_port     = 8472
+#    protocol    = "tcp"
+#    cidr_blocks = [var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 80
+#    to_port     = 80
+#    protocol    = "tcp"
+#    cidr_blocks = ["${var.my_ip}/32", var.subnet_cidr_block]
+#  }
+#  ingress {
+#    from_port   = 443
+#    to_port     = 443
+#    protocol    = "tcp"
+#    cidr_blocks = ["${var.my_ip}/32", var.subnet_cidr_block]
+#  }
   ingress {
     from_port   = 0
     to_port     = 0
-    protocol    = "icmp"
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
@@ -119,6 +161,9 @@ resource "aws_instance" "worker_node" {
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
+
+  user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/worker-node-startup.sh", {}))
+
   tags = {
     Name = "Child-node-${count.index}"
   }

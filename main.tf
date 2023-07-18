@@ -40,6 +40,6 @@ provider "aws" {
 #  source = "./modules/jenkins"
 #}
 
-module "kubernetes" {
-  source = "./modules/kubernetes"
+module "microk8s" {
+  source = "./modules/microk8s"
 }

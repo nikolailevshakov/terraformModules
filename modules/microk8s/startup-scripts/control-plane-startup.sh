@@ -2,11 +2,8 @@
 
 
 apt update -y
-apt install tree -y
-apt install net-tools -y
-apt install snapd
 snap install microk8s --classic
-alias kubectl='microk8s kubectl'
+echo "kubectl='microk8s kubectl'" >> /home/ubuntu/.bashrc
 usermod -a -G microk8s ubuntu
 chown -f -R ubuntu ~/.kube
 

@@ -35,5 +35,10 @@
 
 output "control-plane" {
   description = "Public IP of instance"
-  value = module.kubernetes.control_node_ip_addr
+  value = module.microk8s.control_node_ip_addr
+}
+
+output "worker-nodes" {
+  description = "Public IP of instance"
+  value = module.microk8s.child_ip_addresses
 }
