@@ -8,11 +8,11 @@ Collection of terraform modules:
 - prometheus: one vm with prometheus running in docker
 - jenkins: one vm with installed jenkins in docker
 - kubernetes: microk8s or vanilla kubernetes cluster
+- nexus: nexus artifact repository
 
 TODO:
 - postgresql:
 - kafka:
 - ELK:
-- Nexus:
 
 
