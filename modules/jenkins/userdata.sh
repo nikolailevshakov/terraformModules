@@ -20,8 +20,8 @@ apt-get update -y
 apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 # INSTALL JENKINS
-
-docker run -p 8080:8080 -p 50000:50000 -v /home/ubuntu/jenkins_home:/var/jenkins_home --name jenkins jenkins/jenkins
+chmod 777 /home/ubuntu/jenkins_home
+docker run --rm -u 0 -d -p 8080:8080 -p 50000:50000 -v /home/ubuntu/jenkins_home:/var/jenkins_home --name jenkins jenkins/jenkins
 
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword > /home/ubuntu/secret.txt
 

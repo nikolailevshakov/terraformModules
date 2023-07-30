@@ -28,17 +28,17 @@
 #  value = module.prometheus.instance
 #}
 
-#output "instance" {
+output "instance" {
+  description = "Public IP of instance"
+  value = module.jenkins.instance
+}
+
+#output "control-plane" {
 #  description = "Public IP of instance"
-#  value = module.jenkins.instance
+#  value = module.microk8s.control_node_ip_addr
 #}
-
-output "control-plane" {
-  description = "Public IP of instance"
-  value = module.microk8s.control_node_ip_addr
-}
-
-output "worker-nodes" {
-  description = "Public IP of instance"
-  value = module.microk8s.child_ip_addresses
-}
+#
+#output "worker-nodes" {
+#  description = "Public IP of instance"
+#  value = module.microk8s.child_ip_addresses
+#}

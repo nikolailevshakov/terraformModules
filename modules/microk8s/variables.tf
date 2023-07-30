@@ -20,7 +20,7 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.165.82"
+  default = "87.116.161.38"
 }
 
 variable "ami" {
@@ -48,4 +48,13 @@ variable "worker_node_amount" {
   description = "Amount of worker nodes"
   type = number
   default = 1
+}
+
+variable "cluster_type" {
+  description = "Type of the cluster: microk8s or kubernetes"
+  type = map
+  default = {
+    "microk8s" = ["control-plane-startup.sh", "worker-node-startup.sh"]
+    "kubernetes" = ["control-plane-kuber.sh", "worker-node-kuber.sh"]
+  }
 }
