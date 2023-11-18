@@ -8,10 +8,10 @@
 #  value       = module.ansible.control_node_ip_addr
 #}
 
-#output "instance" {
-#  description = "Public IP of instance"
-#  value = module.instance.instance
-#}
+output "instance" {
+  description = "Public IP of instance"
+  value = module.instance.instance
+}
 
 #output "monitoring-instance" {
 #  description = "Ip of the instance with influxdb and grafana"
@@ -43,7 +43,7 @@
 #  value = module.microk8s.child_ip_addresses
 #}
 
-output "nexus" {
-  description = "Public IP of instance"
-  value = module.nexus.instance
-}
+#output "nexus" {
+#  description = "Public IP of instance"
+#  value = module.nexus.instance
+#}

@@ -49,31 +49,37 @@ resource "aws_security_group" "instance" {
   description = "Allows ssh access"
   vpc_id      = aws_vpc.sample-vpc.id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
-  }
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
-  }
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
-  }
-  ingress {
+#  ingress {
+#    from_port   = 22
+#    to_port     = 22
+#    protocol    = "tcp"
+#    cidr_blocks = ["${var.my_ip}/32"]
+#  }
+#  ingress {
+#    from_port   = 80
+#    to_port     = 80
+#    protocol    = "tcp"
+#    cidr_blocks = ["${var.my_ip}/32"]
+#  }
+#  ingress {
+#    from_port   = 443
+#    to_port     = 443
+#    protocol    = "tcp"
+#    cidr_blocks = ["${var.my_ip}/32"]
+#  }
+#  ingress {
+#    from_port   = 0
+#    to_port     = 0
+#    protocol    = "icmp"
+#    cidr_blocks = ["${var.my_ip}/32"]
+#  }
+  egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "icmp"
-    cidr_blocks = ["${var.my_ip}/32"]
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-  egress {
+  ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -84,7 +90,7 @@ resource "aws_security_group" "instance" {
 
 
 resource "aws_key_pair" "key_pair" {
-  key_name   = "instance-key"
+  key_name   = "instance-key-instance-docker"
   public_key = file("${path.module}/key.pub")
 }
 

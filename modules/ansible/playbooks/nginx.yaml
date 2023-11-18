@@ -1,0 +1,27 @@
+---
+- name: Apache server installed
+  hosts: host1
+  become: yes
+  tasks:
+  - name: Update all
+    apt:
+      upgrade: yes
+      update_cache: yes
+  - name: Latest nginx version installed
+    apt:
+      name: nginx
+      state: latest
+  - name: Nginx enabled and running
+    service:
+      name: nginx
+      enabled: true
+      state: started
+  - name: web.html copied
+    copy:
+      src: web.html
+      dest: /var/www/html/index.html
+      notify:
+        - restart nginx
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted

@@ -40,10 +40,10 @@ provider "aws" {
 #  source = "./modules/jenkins"
 #}
 
-#module "microk8s" {
-#  source = "./modules/microk8s"
-#}
-
-module "nexus" {
-  source = "./modules/nexus"
+module "microk8s" {
+  source = "./modules/microk8s"
 }
+
+#module "nexus" {
+#  source = "./modules/nexus"
+#}

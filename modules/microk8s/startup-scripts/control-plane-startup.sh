@@ -9,3 +9,4 @@ chown -f -R ubuntu ~/.kube
 git clone https://github.com/sandervanvugt/cka /home/ubuntu/cka
 
 microk8s add-node | head -n 2 | tail -n 1 > /home/ubuntu/add-node.sh
+# microk8s kubectl config view --raw > ~/.kube/config

@@ -69,12 +69,12 @@ resource "aws_security_group" "instance" {
 
 
 resource "aws_key_pair" "key_pair" {
-  key_name   = "instance-key"
+  key_name   = "instance-key-microk8s-control"
   public_key = file("${path.module}/key.pub")
 }
 
 resource "aws_key_pair" "key_pair_worker" {
-  key_name   = "ansible-key"
+  key_name   = "instance-key-microk8s-worker"
   public_key = file("${path.module}/worker-key/worker.pub")
 }
 
@@ -86,31 +86,31 @@ resource "aws_instance" "controle_plane" {
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
 
-  user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/${var.cluster_type["microk8s"][0]}", {}))
+  user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/control-plane-startup.sh", {}))
 
   tags = {
     Name = "Control-plane"
   }
 }
 
-resource "aws_instance" "worker_node" {
-  count                       = var.worker_node_amount
-  ami                         = var.ami[var.region]
-  instance_type               = var.worker_node_instance_type
-  key_name                    = aws_key_pair.key_pair_worker.key_name
-  associate_public_ip_address = true
-  subnet_id                   = aws_subnet.public.id
-  vpc_security_group_ids      = [aws_security_group.instance.id]
-
-  user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/${var.cluster_type["microk8s"][1]}", {
-    control_node_ip = aws_instance.controle_plane.public_ip,
-    private_key = file("${path.module}/key.pem")
-  }))
-
-  depends_on = [aws_instance.controle_plane]
-
-  tags = {
-    Name = "Child-node-${count.index}"
-  }
-}
+#resource "aws_instance" "worker_node" {
+#  count                       = var.worker_node_amount
+#  ami                         = var.ami[var.region]
+#  instance_type               = var.worker_node_instance_type
+#  key_name                    = aws_key_pair.key_pair_worker.key_name
+#  associate_public_ip_address = true
+#  subnet_id                   = aws_subnet.public.id
+#  vpc_security_group_ids      = [aws_security_group.instance.id]
+#
+#  user_data_base64 = base64encode(templatefile("${path.module}/startup-scripts/worker-node-startup.sh", {
+#    control_node_ip = aws_instance.controle_plane.public_ip,
+#    private_key = file("${path.module}/key.pem")
+#  }))
+#
+#  depends_on = [aws_instance.controle_plane]
+#
+#  tags = {
+#    Name = "Child-node-${count.index}"
+#  }
+#}
 

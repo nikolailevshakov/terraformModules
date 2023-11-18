@@ -20,7 +20,7 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.163.37"
+  default = "87.116.167.108"
 }
 
 variable "ami" {
@@ -47,5 +47,5 @@ variable "children_node_instance_type" {
 variable "children_node_amount" {
   description = "Amount of children instances"
   type = number
-  default = 3
+  default = 2
 }

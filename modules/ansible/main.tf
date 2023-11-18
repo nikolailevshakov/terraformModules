@@ -53,19 +53,19 @@ resource "aws_security_group" "instance" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
     from_port   = 0
@@ -87,7 +87,7 @@ resource "aws_security_group" "instance" {
 
 
 resource "aws_key_pair" "key_pair" {
-  key_name   = "instance-key"
+  key_name   = "instance-key-ansible-controle-node"
   public_key = file("${path.module}/key.pub")
 }
 
@@ -107,11 +107,11 @@ resource "aws_instance" "controle_node" {
   user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {
     child_public_ip1 = aws_instance.instance_child[0].public_ip
     child_public_ip2 = aws_instance.instance_child[1].public_ip
-    child_public_ip3 = aws_instance.instance_child[2].public_ip
+#    child_public_ip3 = aws_instance.instance_child[2].public_ip
     private_key = file("${path.module}/ansible-key/ansible")
   }))
 
-  depends_on = [aws_instance.instance_child[0], aws_instance.instance_child[1], aws_instance.instance_child[2]]
+  depends_on = [aws_instance.instance_child[0], aws_instance.instance_child[1]]
   tags = {
     Name = "Control-node"
   }
